@@ -1,0 +1,164 @@
+package com.ultracube.blockentity;
+
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.items.ItemStackHandler;
+
+import javax.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+
+import com.ultracube.Ultracube;
+import com.ultracube.blockentity.util.CustomEnergyStorage;
+import com.ultracube.blockentity.util.TickableBlockEntity;
+import com.ultracube.init.BlockEntityInit;
+import com.ultracube.init.ItemInit;
+import com.ultracube.menu.CubeEnergyExtractorMenu;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+
+
+public class CubeEnergyExtractorBlockEntity extends BlockEntity implements TickableBlockEntity, MenuProvider {
+
+    private static final Component TITLE =
+            Component.translatable("container." + Ultracube.MODID + ".energy_generator");
+
+    public CubeEnergyExtractorBlockEntity(BlockPos pPos, BlockState pBlockState) {
+        super(BlockEntityInit.CUBE_ENERGY_EXTRACTOR_BLOCK.get(), pPos, pBlockState);
+    }
+
+    private final ItemStackHandler inventory = new ItemStackHandler(1);
+    private final @Nullable ItemStackHandler inventoryOptional = this.inventory;
+
+    private final CustomEnergyStorage energy = new CustomEnergyStorage(10000, 0, 100, 0);
+    private final @Nullable CustomEnergyStorage energyOptional = this.energy;
+
+
+    private final ContainerData containerData = new ContainerData() {
+        @Override
+        public int get(int pIndex) {
+            return switch (pIndex) {
+                case 0 -> CubeEnergyExtractorBlockEntity.this.energy.getEnergyStored();
+                case 1 -> CubeEnergyExtractorBlockEntity.this.energy.getMaxEnergyStored();
+                default -> throw new UnsupportedOperationException("Unexpected value: " + pIndex);
+            };
+        }
+
+        @Override
+        public void set(int pIndex, int pValue) {
+            switch (pIndex) {
+                case 0 -> CubeEnergyExtractorBlockEntity.this.energy.setEnergy(pValue);
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 2;
+        }
+    };
+
+    @Override
+    public void tick() {
+        if (this.level == null || this.level.isClientSide())
+            return;
+
+        if(this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
+            if(canExtract(this.inventory.getStackInSlot(0))) {
+                this.energy.addEnergy(10);
+                sendUpdate();
+            }
+        }
+    }
+
+    @Override
+    protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registryAccess) {
+        super.saveAdditional(nbt, registryAccess);
+
+        var data = new CompoundTag();
+        data.put("Inventory", this.inventory.serializeNBT(registryAccess));
+        data.put("Energy", this.energy.serializeNBT(registryAccess));
+        nbt.put(Ultracube.MODID, data);
+    }
+
+    @Override
+    protected void loadAdditional(CompoundTag nbt, HolderLookup.Provider registryAccess) {
+        super.loadAdditional(nbt, registryAccess);
+
+        CompoundTag data = nbt.getCompound(Ultracube.MODID);
+        if(data.isEmpty())
+            return;
+
+        if (data.contains("Inventory", Tag.TAG_COMPOUND)) {
+            this.inventory.deserializeNBT(registryAccess, data.getCompound("Inventory"));
+        }
+
+        if(data.contains("Energy", Tag.TAG_INT)) {
+            this.energy.deserializeNBT(registryAccess, data.get("Energy"));
+        }
+    }
+
+    @Override
+    public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registryAccess) {
+        CompoundTag nbt = super.getUpdateTag(registryAccess);
+        saveAdditional(nbt, registryAccess);
+        return nbt;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    @Override
+    public @NotNull Component getDisplayName() {
+        return TITLE;
+    }
+
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, @NotNull Player pPlayer) {
+        return new CubeEnergyExtractorMenu(pContainerId, pPlayerInventory, this, this.containerData);
+    }
+
+    public @Nullable ItemStackHandler getInventoryOptional() {
+        return this.inventoryOptional;
+    }
+
+    public ItemStackHandler getInventory() {
+        return this.inventory;
+    }
+
+    public @Nullable CustomEnergyStorage getEnergyOptional() {
+        return this.energyOptional;
+    }
+
+    public CustomEnergyStorage getEnergy() {
+        return this.energy;
+    }
+
+    private void sendUpdate() {
+        setChanged();
+
+        if(this.level != null)
+            this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    }
+
+    public boolean canExtract(ItemStack stack) {
+        return stack.getItem() == ItemInit.THE_CUBE_BLOCK_ITEM.get();
+    }
+}
