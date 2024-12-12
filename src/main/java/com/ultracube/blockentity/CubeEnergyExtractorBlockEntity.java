@@ -3,6 +3,10 @@ package com.ultracube.blockentity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -17,6 +21,7 @@ import com.ultracube.init.ItemInit;
 import com.ultracube.menu.CubeEnergyExtractorMenu;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -31,11 +36,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 
-
 public class CubeEnergyExtractorBlockEntity extends BlockEntity implements TickableBlockEntity, MenuProvider {
 
-    private static final Component TITLE =
-            Component.translatable("container." + Ultracube.MODID + ".energy_generator");
+    public static final ICapabilityProvider<CubeEnergyExtractorBlockEntity, Direction, IEnergyStorage> ENERGY_STORAGE_PROVIDER = (
+            be, side) -> be.getEnergyOptional() != null ? be.getEnergyOptional() : null;
+
+    private static final Component TITLE = Component.translatable("container." + Ultracube.MODID + ".energy_generator");
 
     public CubeEnergyExtractorBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.CUBE_ENERGY_EXTRACTOR_BLOCK.get(), pPos, pBlockState);
@@ -44,9 +50,8 @@ public class CubeEnergyExtractorBlockEntity extends BlockEntity implements Ticka
     private final ItemStackHandler inventory = new ItemStackHandler(1);
     private final @Nullable ItemStackHandler inventoryOptional = this.inventory;
 
-    private final CustomEnergyStorage energy = new CustomEnergyStorage(10000, 0, 100, 0);
+    private final CustomEnergyStorage energy = new CustomEnergyStorage(10000, 1000, 1000, 0);
     private final @Nullable CustomEnergyStorage energyOptional = this.energy;
-
 
     private final ContainerData containerData = new ContainerData() {
         @Override
@@ -76,12 +81,14 @@ public class CubeEnergyExtractorBlockEntity extends BlockEntity implements Ticka
         if (this.level == null || this.level.isClientSide())
             return;
 
-        if(this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-            if(canExtract(this.inventory.getStackInSlot(0))) {
+        if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
+            if (canExtract(this.inventory.getStackInSlot(0))) {
                 this.energy.addEnergy(10);
-                sendUpdate();
             }
         }
+
+        pushEnergy();
+        sendUpdate();
     }
 
     @Override
@@ -99,14 +106,14 @@ public class CubeEnergyExtractorBlockEntity extends BlockEntity implements Ticka
         super.loadAdditional(nbt, registryAccess);
 
         CompoundTag data = nbt.getCompound(Ultracube.MODID);
-        if(data.isEmpty())
+        if (data.isEmpty())
             return;
 
         if (data.contains("Inventory", Tag.TAG_COMPOUND)) {
             this.inventory.deserializeNBT(registryAccess, data.getCompound("Inventory"));
         }
 
-        if(data.contains("Energy", Tag.TAG_INT)) {
+        if (data.contains("Energy", Tag.TAG_INT)) {
             this.energy.deserializeNBT(registryAccess, data.get("Energy"));
         }
     }
@@ -131,7 +138,8 @@ public class CubeEnergyExtractorBlockEntity extends BlockEntity implements Ticka
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, @NotNull Player pPlayer) {
+    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory,
+            @NotNull Player pPlayer) {
         return new CubeEnergyExtractorMenu(pContainerId, pPlayerInventory, this, this.containerData);
     }
 
@@ -154,11 +162,33 @@ public class CubeEnergyExtractorBlockEntity extends BlockEntity implements Ticka
     private void sendUpdate() {
         setChanged();
 
-        if(this.level != null)
+        if (this.level != null)
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     public boolean canExtract(ItemStack stack) {
         return stack.getItem() == ItemInit.THE_CUBE_BLOCK_ITEM.get();
     }
+
+    private void pushEnergy() {
+        // Transmit power out all sides.
+        for (Direction side : Direction.values()) {
+            IEnergyStorage selfHandler = this.getEnergyOptional();
+            if (selfHandler == null) {
+                continue;
+            }
+            // Get the other energy handler
+            IEnergyStorage otherHandler = level.getCapability(Capabilities.EnergyStorage.BLOCK,
+                    getBlockPos().relative(side), side.getOpposite());
+            if (otherHandler != null) {
+                // If the other handler can receive power transmit ours
+                if (otherHandler.canReceive()) {
+                    int energyToReceive = selfHandler.extractEnergy(selfHandler.getEnergyStored(), true);
+                    int received = otherHandler.receiveEnergy(energyToReceive, false);
+                    selfHandler.extractEnergy(received, false);
+                }
+            }
+        }
+    }
+
 }

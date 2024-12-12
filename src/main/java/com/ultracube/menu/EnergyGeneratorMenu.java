@@ -22,13 +22,14 @@ public class EnergyGeneratorMenu extends AbstractContainerMenu {
 
     // Client Constructor
     public EnergyGeneratorMenu(int containerId, Inventory playerInv, FriendlyByteBuf extraData) {
-        this(containerId, playerInv, playerInv.player.level().getBlockEntity(extraData.readBlockPos()), new SimpleContainerData(4));
+        this(containerId, playerInv, playerInv.player.level().getBlockEntity(extraData.readBlockPos()),
+                new SimpleContainerData(4));
     }
 
     // Server Constructor
     public EnergyGeneratorMenu(int containerId, Inventory playerInv, BlockEntity blockEntity, ContainerData data) {
         super(MenuInit.ENERGY_GENERATOR_MENU.get(), containerId);
-        if(blockEntity instanceof EnergyGeneratorBlockEntity be) {
+        if (blockEntity instanceof EnergyGeneratorBlockEntity be) {
             this.blockEntity = be;
         } else {
             throw new IllegalStateException("Incorrect block entity class (%s) passed into EnergyGeneratorMenu!"
@@ -49,7 +50,7 @@ public class EnergyGeneratorMenu extends AbstractContainerMenu {
         ItemStackHandler itemStackHandler = be.getInventoryOptional();
         if (itemStackHandler != null) {
             addSlot(new CustomCubeSlot(itemStackHandler, 0, 44, 36));
-        }   
+        }
     }
 
     private void createPlayerInventory(Inventory playerInv) {
@@ -77,21 +78,21 @@ public class EnergyGeneratorMenu extends AbstractContainerMenu {
         Slot fromSlot = getSlot(pIndex);
         ItemStack fromStack = fromSlot.getItem();
 
-        if(fromStack.getCount() <= 0)
+        if (fromStack.getCount() <= 0)
             fromSlot.set(ItemStack.EMPTY);
 
-        if(!fromSlot.hasItem())
+        if (!fromSlot.hasItem())
             return ItemStack.EMPTY;
 
         ItemStack copyFromStack = fromStack.copy();
 
-        if(pIndex < 36) {
+        if (pIndex < 36) {
             // We are inside of the player's inventory
-            if(!moveItemStackTo(fromStack, 36, 37, false))
+            if (!moveItemStackTo(fromStack, 36, 37, false))
                 return ItemStack.EMPTY;
         } else if (pIndex < 37) {
             // We are inside of the block entity inventory
-            if(!moveItemStackTo(fromStack, 0, 36, false))
+            if (!moveItemStackTo(fromStack, 0, 36, false))
                 return ItemStack.EMPTY;
         } else {
             System.err.println("Invalid slot index: " + pIndex);

@@ -30,11 +30,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 
-
 public class EnergyGeneratorBlockEntity extends BlockEntity implements TickableBlockEntity, MenuProvider {
 
-    private static final Component TITLE =
-            Component.translatable("container." + Ultracube.MODID + ".energy_generator");
+    private static final Component TITLE = Component.translatable("container." + Ultracube.MODID + ".energy_generator");
 
     public EnergyGeneratorBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.ENERGY_GENERATOR_BLOCK.get(), pPos, pBlockState);
@@ -80,9 +78,9 @@ public class EnergyGeneratorBlockEntity extends BlockEntity implements TickableB
         if (this.level == null || this.level.isClientSide())
             return;
 
-        if(this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-            if(this.burnTime <= 0) {
-                if(canBurn(this.inventory.getStackInSlot(0))) {
+        if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
+            if (this.burnTime <= 0) {
+                if (canBurn(this.inventory.getStackInSlot(0))) {
                     this.burnTime = this.maxBurnTime = getBurnTime(this.inventory.getStackInSlot(0));
                     this.inventory.getStackInSlot(0).shrink(1);
                     sendUpdate();
@@ -112,14 +110,14 @@ public class EnergyGeneratorBlockEntity extends BlockEntity implements TickableB
         super.loadAdditional(nbt, registryAccess);
 
         CompoundTag tutorialmodData = nbt.getCompound(Ultracube.MODID);
-        if(tutorialmodData.isEmpty())
+        if (tutorialmodData.isEmpty())
             return;
 
         if (tutorialmodData.contains("Inventory", Tag.TAG_COMPOUND)) {
             this.inventory.deserializeNBT(registryAccess, tutorialmodData.getCompound("Inventory"));
         }
 
-        if(tutorialmodData.contains("Energy", Tag.TAG_INT)) {
+        if (tutorialmodData.contains("Energy", Tag.TAG_INT)) {
             this.energy.deserializeNBT(registryAccess, tutorialmodData.get("Energy"));
         }
 
@@ -152,7 +150,8 @@ public class EnergyGeneratorBlockEntity extends BlockEntity implements TickableB
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, @NotNull Player pPlayer) {
+    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory,
+            @NotNull Player pPlayer) {
         return new EnergyGeneratorMenu(pContainerId, pPlayerInventory, this, this.containerData);
     }
 
@@ -175,12 +174,12 @@ public class EnergyGeneratorBlockEntity extends BlockEntity implements TickableB
     private void sendUpdate() {
         setChanged();
 
-        if(this.level != null)
+        if (this.level != null)
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     public int getBurnTime(ItemStack stack) {
-        //TODO get burn time correctly
+        // TODO get burn time correctly
         return 0;
     }
 

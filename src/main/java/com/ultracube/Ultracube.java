@@ -2,6 +2,7 @@ package com.ultracube;
 
 import com.ultracube.init.BlockEntityInit;
 import com.ultracube.init.BlockInit;
+import com.ultracube.init.CapabilityInit;
 import com.ultracube.init.CreativeTabInit;
 import com.ultracube.init.ItemInit;
 import com.ultracube.init.MenuInit;
@@ -20,5 +21,8 @@ public class Ultracube {
         CreativeTabInit.CREATIVE_MODE_TABS.register(modEventBus);
         BlockEntityInit.BLOCK_ENTITIES.register(modEventBus);
         MenuInit.MENU_TYPES.register(modEventBus);
+
+        modEventBus.addListener(new CapabilityInit()::registerCapabilities);
+
     }
 }

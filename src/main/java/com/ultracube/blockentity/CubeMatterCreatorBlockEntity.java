@@ -3,6 +3,8 @@ package com.ultracube.blockentity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -17,6 +19,7 @@ import com.ultracube.init.ItemInit;
 import com.ultracube.menu.CubeMatterCreatorMenu;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -31,11 +34,12 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 
-
 public class CubeMatterCreatorBlockEntity extends BlockEntity implements TickableBlockEntity, MenuProvider {
 
-    private static final Component TITLE =
-            Component.translatable("container." + Ultracube.MODID + ".energy_generator");
+    public static final ICapabilityProvider<CubeMatterCreatorBlockEntity, Direction, IEnergyStorage> ENERGY_STORAGE_PROVIDER = (
+            be, side) -> be.getEnergyOptional() != null ? be.getEnergyOptional() : null;
+
+    private static final Component TITLE = Component.translatable("container." + Ultracube.MODID + ".energy_generator");
 
     public CubeMatterCreatorBlockEntity(BlockPos pPos, BlockState pBlockState) {
         super(BlockEntityInit.CUBE_MATTER_CREATOR_BLOCK.get(), pPos, pBlockState);
@@ -44,11 +48,10 @@ public class CubeMatterCreatorBlockEntity extends BlockEntity implements Tickabl
     private final ItemStackHandler inventory = new ItemStackHandler(2);
     private final @Nullable ItemStackHandler inventoryOptional = this.inventory;
 
-    private final CustomEnergyStorage energy = new CustomEnergyStorage(10000, 0, 100, 0);
+    private final CustomEnergyStorage energy = new CustomEnergyStorage(10000, 1000, 0, 0);
     private final @Nullable CustomEnergyStorage energyOptional = this.energy;
 
-    private int maxGenTime = 10, genTime = 0;
-
+    private int maxGenTime = 10, genTime = 0, energyPerTick = 50;
 
     private final ContainerData containerData = new ContainerData() {
         @Override
@@ -82,27 +85,26 @@ public class CubeMatterCreatorBlockEntity extends BlockEntity implements Tickabl
         if (this.level == null || this.level.isClientSide())
             return;
 
-        if(this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-            if(canExtract(this.inventory.getStackInSlot(0))) {
-                if(this.genTime <= 0) {
+        if (this.energy.getEnergyStored() > 0) {
+            if (canExtract(this.inventory.getStackInSlot(0))) {
+                if (this.genTime <= 0) {
                     this.genTime = this.maxGenTime;
 
-                    if (this.inventory.getStackInSlot(1).getMaxStackSize() == this.inventory.getStackInSlot(1).getCount()) {
+                    if (this.inventory.getStackInSlot(1).getMaxStackSize() == this.inventory.getStackInSlot(1)
+                            .getCount()) {
                         return;
                     }
 
                     if (this.inventory.getStackInSlot(1).isEmpty()) {
                         this.inventory.setStackInSlot(1, new ItemStack(ItemInit.CUBE_MATTER_ITEM.get(), 1));
-                    }
-                    else
-                    {
+                    } else {
                         this.inventory.getStackInSlot(1).grow(1);
                     }
                     sendUpdate();
-        
+
                 } else {
                     this.genTime--;
-                    //this.energy.addEnergy(-10);
+                    this.energy.addEnergy(-energyPerTick);
                     sendUpdate();
                 }
             }
@@ -124,14 +126,14 @@ public class CubeMatterCreatorBlockEntity extends BlockEntity implements Tickabl
         super.loadAdditional(nbt, registryAccess);
 
         CompoundTag data = nbt.getCompound(Ultracube.MODID);
-        if(data.isEmpty())
+        if (data.isEmpty())
             return;
 
         if (data.contains("Inventory", Tag.TAG_COMPOUND)) {
             this.inventory.deserializeNBT(registryAccess, data.getCompound("Inventory"));
         }
 
-        if(data.contains("Energy", Tag.TAG_INT)) {
+        if (data.contains("Energy", Tag.TAG_INT)) {
             this.energy.deserializeNBT(registryAccess, data.get("Energy"));
         }
     }
@@ -156,7 +158,8 @@ public class CubeMatterCreatorBlockEntity extends BlockEntity implements Tickabl
 
     @Nullable
     @Override
-    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory, @NotNull Player pPlayer) {
+    public AbstractContainerMenu createMenu(int pContainerId, @NotNull Inventory pPlayerInventory,
+            @NotNull Player pPlayer) {
         return new CubeMatterCreatorMenu(pContainerId, pPlayerInventory, this, this.containerData);
     }
 
@@ -179,12 +182,12 @@ public class CubeMatterCreatorBlockEntity extends BlockEntity implements Tickabl
     private void sendUpdate() {
         setChanged();
 
-        if(this.level != null)
+        if (this.level != null)
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
     public boolean canExtract(ItemStack stack) {
         return stack.getItem() == ItemInit.THE_CUBE_BLOCK_ITEM.get();
-    } 
+    }
 
 }

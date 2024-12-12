@@ -35,7 +35,7 @@ public class CubeMatterCreatorMenu extends AbstractContainerMenu {
     public CubeMatterCreatorMenu(int containerId, Inventory playerInv, BlockEntity blockEntity, ContainerData data) {
         super(MenuInit.CUBE_MATTER_CREATOR_MENU.get(), containerId);
 
-        if(blockEntity instanceof CubeMatterCreatorBlockEntity be) {
+        if (blockEntity instanceof CubeMatterCreatorBlockEntity be) {
             this.blockEntity = be;
         } else {
             throw new IllegalStateException("Incorrect block entity class (%s) passed into CubeMatterCreatorMenu!"
@@ -57,7 +57,7 @@ public class CubeMatterCreatorMenu extends AbstractContainerMenu {
         if (itemStackHandler != null) {
             addSlot(new CustomCubeSlot(itemStackHandler, 0, 44, 36));
             addSlot(new SlotItemHandler(itemStackHandler, 1, 87, 36));
-        }                
+        }
     }
 
     private void createPlayerInventory(Inventory playerInv) {
@@ -85,21 +85,21 @@ public class CubeMatterCreatorMenu extends AbstractContainerMenu {
         Slot fromSlot = getSlot(pIndex);
         ItemStack fromStack = fromSlot.getItem();
 
-        if(fromStack.getCount() <= 0)
+        if (fromStack.getCount() <= 0)
             fromSlot.set(ItemStack.EMPTY);
 
-        if(!fromSlot.hasItem())
+        if (!fromSlot.hasItem())
             return ItemStack.EMPTY;
 
         ItemStack copyFromStack = fromStack.copy();
 
-        if(pIndex < 36) {
+        if (pIndex < 36) {
             // We are inside of the player's inventory
-            if(!moveItemStackTo(fromStack, 36, 37, false))
+            if (!moveItemStackTo(fromStack, 36, 37, false))
                 return ItemStack.EMPTY;
         } else if (pIndex < 38) {
             // We are inside of the block entity inventory
-            if(!moveItemStackTo(fromStack, 0, 36, false))
+            if (!moveItemStackTo(fromStack, 0, 36, false))
                 return ItemStack.EMPTY;
         } else {
             System.err.println("Invalid slot index: " + pIndex);
