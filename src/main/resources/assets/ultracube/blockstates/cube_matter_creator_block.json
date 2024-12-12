@@ -1,0 +1,7 @@
+{
+    "variants": {
+        "": {
+            "model": "ultracube:block/cube_matter_creator_block"
+        }
+    }
+}

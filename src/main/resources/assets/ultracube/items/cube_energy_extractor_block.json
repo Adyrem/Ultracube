@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "ultracube:block/cube_energy_extractor_block"
+  }
+}

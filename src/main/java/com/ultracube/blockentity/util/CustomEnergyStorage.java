@@ -20,9 +20,9 @@ public class CustomEnergyStorage extends EnergyStorage {
     }
 
     public void setEnergy(int energy) {
-        if(energy < 0)
+        if (energy < 0)
             energy = 0;
-        if(energy > this.capacity)
+        if (energy > this.capacity)
             energy = this.capacity;
 
         this.energy = energy;

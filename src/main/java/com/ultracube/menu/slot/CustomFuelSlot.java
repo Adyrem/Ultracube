@@ -9,12 +9,11 @@ import org.jetbrains.annotations.NotNull;
 public class CustomFuelSlot extends SlotItemHandler {
     public CustomFuelSlot(IItemHandler inventory, int index, int xPosition, int yPosition) {
         super(inventory, index, xPosition, yPosition);
-        }
-
+    }
 
     @Override
     public boolean mayPlace(@NotNull ItemStack stack) {
-        //TODO check for fuel items
+        // TODO check for fuel items
 
         return false;
     }

@@ -1,7 +1,7 @@
 {
-    "variants" : {
+    "variants": {
         "": {
-            "model" : "ultracube:block/the_cube_block"
+            "model": "ultracube:block/the_cube_block"
         }
     }
 }

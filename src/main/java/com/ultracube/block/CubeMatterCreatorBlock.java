@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import com.ultracube.blockentity.CubeEnergyExtractorBlockEntity;
+import com.ultracube.blockentity.CubeMatterCreatorBlockEntity;
 import com.ultracube.blockentity.util.TickableBlockEntity;
 import com.ultracube.init.BlockEntityInit;
 
@@ -23,16 +23,16 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class CubeEnergyExtractorBlock extends Block implements EntityBlock {
+public class CubeMatterCreatorBlock extends Block implements EntityBlock {
 
-    public CubeEnergyExtractorBlock(Properties properties) {
+    public CubeMatterCreatorBlock(Properties properties) {
         super(properties);
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return BlockEntityInit.CUBE_ENERGY_EXTRACTOR_BLOCK.get().create(pPos, pState);
+        return BlockEntityInit.CUBE_MATTER_CREATOR_BLOCK.get().create(pPos, pState);
     }
 
     @Nullable
@@ -46,7 +46,7 @@ public class CubeEnergyExtractorBlock extends Block implements EntityBlock {
     protected InteractionResult useWithoutItem(BlockState pBlockState, Level pLevel, BlockPos pBlockPos, Player pPlayer,
             BlockHitResult pBlockHitResult) {
         BlockEntity be = pLevel.getBlockEntity(pBlockPos);
-        if (!(be instanceof CubeEnergyExtractorBlockEntity blockEntity))
+        if (!(be instanceof CubeMatterCreatorBlockEntity blockEntity))
             return InteractionResult.PASS;
 
         if (pLevel.isClientSide())
@@ -65,7 +65,7 @@ public class CubeEnergyExtractorBlock extends Block implements EntityBlock {
             ItemStack pItemStack, BlockState pBlockState, Level pLevel, BlockPos pBlockPos, Player pPlayer,
             InteractionHand pInteractionHand, BlockHitResult pBlockHitResult) {
         BlockEntity be = pLevel.getBlockEntity(pBlockPos);
-        if (!(be instanceof CubeEnergyExtractorBlockEntity blockEntity))
+        if (!(be instanceof CubeMatterCreatorBlockEntity blockEntity))
             return InteractionResult.PASS;
 
         if (pLevel.isClientSide())
@@ -83,9 +83,11 @@ public class CubeEnergyExtractorBlock extends Block implements EntityBlock {
     public void onRemove(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos,
             @NotNull BlockState pNewState, boolean pMovedByPiston) {
         BlockEntity be = pLevel.getBlockEntity(pPos);
-        if (be instanceof CubeEnergyExtractorBlockEntity blockEntity) {
+        if (be instanceof CubeMatterCreatorBlockEntity blockEntity) {
             // drop inventory
-            Block.popResource(pLevel, pPos, blockEntity.getInventory().getStackInSlot(0));
+            for (int i = 0; i < blockEntity.getInventory().getSlots(); i++) {
+                Block.popResource(pLevel, pPos, blockEntity.getInventory().getStackInSlot(i));
+            }
         }
 
         super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);

@@ -19,12 +19,15 @@ public class ItemInit {
         BlockInit.CUBE_ENERGY_EXTRACTOR_BLOCK, new Item.Properties()
         );
 
+    public static final DeferredItem<BlockItem> CUBE_MATTER_CREATOR_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("cube_matter_creator_block",
+        BlockInit.CUBE_MATTER_CREATOR_BLOCK, new Item.Properties()
+        );
+
     public static final DeferredItem<BlockItem> THE_CUBE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("the_cube_block",
         BlockInit.THE_CUBE_BLOCK, new Item.Properties()
             .fireResistant()
             .rarity(Rarity.EPIC)
-            .stacksTo(1)
-        
+            .stacksTo(1)     
     );
 
     public static final DeferredItem<Item> CUBE_MATTER_ITEM = ITEMS.registerSimpleItem("cube_matter",

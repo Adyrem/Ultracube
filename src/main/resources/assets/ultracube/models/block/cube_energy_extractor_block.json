@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:block/cube_all",
     "textures": {
-        "all": "ultracube:block/the_cube_block"
+        "all": "ultracube:block/cube_energy_extractor_block"
     }
 }

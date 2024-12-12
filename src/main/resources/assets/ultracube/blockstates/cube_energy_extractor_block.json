@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "ultracube:block/cube_energy_extractor_block"
+    }
+  }
+}

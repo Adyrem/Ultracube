@@ -1,6 +1,6 @@
 {
-    "model": {
-      "type": "minecraft:model",
-      "model": "ultracube:block/the_cube_block"
-    }
+  "model": {
+    "type": "minecraft:model",
+    "model": "ultracube:block/the_cube_block"
   }
+}

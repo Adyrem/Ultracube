@@ -3,6 +3,7 @@ package com.ultracube.init;
 
 import com.ultracube.Ultracube;
 import com.ultracube.block.CubeEnergyExtractorBlock;
+import com.ultracube.block.CubeMatterCreatorBlock;
 import com.ultracube.block.EnergyGeneratorBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -27,9 +28,15 @@ public class BlockInit {
         .mapColor(MapColor.STONE)
     );
 
+    public static final DeferredBlock<CubeMatterCreatorBlock> CUBE_MATTER_CREATOR_BLOCK = BLOCKS.registerBlock("cube_matter_creator_block", 
+        CubeMatterCreatorBlock::new,
+        BlockBehaviour.Properties.of()
+        .mapColor(MapColor.STONE)
+    );
+    
     public static final DeferredBlock<Block> THE_CUBE_BLOCK = BLOCKS.registerBlock("the_cube_block", 
-    Block::new,
-    BlockBehaviour.Properties.of()
-    .mapColor(MapColor.STONE)
+        Block::new,
+        BlockBehaviour.Properties.of()
+        .mapColor(MapColor.STONE)
     );
 }

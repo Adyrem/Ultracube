@@ -6,7 +6,6 @@ import net.neoforged.neoforge.items.SlotItemHandler;
 
 import com.ultracube.init.ItemInit;
 
-
 public class CustomCubeSlot extends SlotItemHandler {
 
     public CustomCubeSlot(IItemHandler inventory, int index, int xPosition, int yPosition) {
@@ -16,7 +15,7 @@ public class CustomCubeSlot extends SlotItemHandler {
     @Override
     public boolean mayPlace(ItemStack stack) {
         if (stack.getItem() == ItemInit.THE_CUBE_BLOCK_ITEM.get()) {
-           return true;
+            return true;
         }
 
         return false;

@@ -37,12 +37,14 @@ public class EnergyGeneratorBlock extends Block implements EntityBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level pLevel, @NotNull BlockState pState, @NotNull BlockEntityType<T> pBlockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level pLevel, @NotNull BlockState pState,
+            @NotNull BlockEntityType<T> pBlockEntityType) {
         return TickableBlockEntity.getTickerHelper(pLevel);
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState pBlockState, Level pLevel, BlockPos pBlockPos, Player pPlayer, BlockHitResult pBlockHitResult) {
+    protected InteractionResult useWithoutItem(BlockState pBlockState, Level pLevel, BlockPos pBlockPos, Player pPlayer,
+            BlockHitResult pBlockHitResult) {
         BlockEntity be = pLevel.getBlockEntity(pBlockPos);
         if (!(be instanceof EnergyGeneratorBlockEntity blockEntity))
             return InteractionResult.PASS;
@@ -51,7 +53,7 @@ public class EnergyGeneratorBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
 
         // open screen
-        if(pPlayer instanceof ServerPlayer sPlayer) {
+        if (pPlayer instanceof ServerPlayer sPlayer) {
             sPlayer.openMenu(blockEntity, pBlockPos);
         }
 
@@ -60,8 +62,8 @@ public class EnergyGeneratorBlock extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useItemOn(
-        ItemStack pItemStack, BlockState pBlockState, Level pLevel, BlockPos pBlockPos, Player pPlayer, InteractionHand pInteractionHand, BlockHitResult pBlockHitResult
-    ) {
+            ItemStack pItemStack, BlockState pBlockState, Level pLevel, BlockPos pBlockPos, Player pPlayer,
+            InteractionHand pInteractionHand, BlockHitResult pBlockHitResult) {
         BlockEntity be = pLevel.getBlockEntity(pBlockPos);
         if (!(be instanceof EnergyGeneratorBlockEntity blockEntity))
             return InteractionResult.PASS;
@@ -70,7 +72,7 @@ public class EnergyGeneratorBlock extends Block implements EntityBlock {
             return InteractionResult.SUCCESS;
 
         // open screen
-        if(pPlayer instanceof ServerPlayer sPlayer) {
+        if (pPlayer instanceof ServerPlayer sPlayer) {
             sPlayer.openMenu(blockEntity, pBlockPos);
         }
 
@@ -78,7 +80,8 @@ public class EnergyGeneratorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void onRemove(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull BlockState pNewState, boolean pMovedByPiston) {
+    public void onRemove(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos,
+            @NotNull BlockState pNewState, boolean pMovedByPiston) {
         BlockEntity be = pLevel.getBlockEntity(pPos);
         if (be instanceof EnergyGeneratorBlockEntity blockEntity) {
             // drop inventory
@@ -87,5 +90,5 @@ public class EnergyGeneratorBlock extends Block implements EntityBlock {
 
         super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
     }
-    
+
 }

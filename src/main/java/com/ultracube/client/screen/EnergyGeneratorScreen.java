@@ -13,8 +13,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
 public class EnergyGeneratorScreen extends AbstractContainerScreen<EnergyGeneratorMenu> {
-    private static final ResourceLocation TEXTURE =
-            ResourceLocation.fromNamespaceAndPath(Ultracube.MODID, "textures/gui/energy_generator.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Ultracube.MODID,
+            "textures/gui/energy_generator.png");
 
     public EnergyGeneratorScreen(EnergyGeneratorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
@@ -25,7 +25,8 @@ public class EnergyGeneratorScreen extends AbstractContainerScreen<EnergyGenerat
     @Override
     protected void renderBg(@NotNull GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
         renderTransparentBackground(pGuiGraphics);
-        pGuiGraphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos, this.topPos, 0.f, 0.f, this.imageWidth, this.imageHeight, 256, 256);
+        pGuiGraphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos, this.topPos, 0.f, 0.f, this.imageWidth,
+                this.imageHeight, 256, 256);
         int energyScaled = this.menu.getEnergyStoredScaled();
 
         // AARRGGBB
@@ -44,8 +45,7 @@ public class EnergyGeneratorScreen extends AbstractContainerScreen<EnergyGenerat
                 this.topPos + 21 + (38 - energyScaled),
                 this.leftPos + 130,
                 this.topPos + 59,
-                0xFFCC2222
-        );
+                0xFFCC2222);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class EnergyGeneratorScreen extends AbstractContainerScreen<EnergyGenerat
         int maxEnergy = this.menu.getMaxEnergy();
 
         Component text = Component.literal("Energy: " + energyStored + " / " + maxEnergy);
-        if(isHovering(115, 20, 16, 40, pMouseX, pMouseY)) {
+        if (isHovering(115, 20, 16, 40, pMouseX, pMouseY)) {
             pGuiGraphics.renderTooltip(this.font, text, pMouseX, pMouseY);
         }
     }

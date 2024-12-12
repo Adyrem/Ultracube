@@ -1,9 +1,11 @@
 package com.ultracube.client.screen;
 
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
+import com.mojang.logging.LogUtils;
 import com.ultracube.Ultracube;
-import com.ultracube.menu.CubeEnergyExtractorMenu;
+import com.ultracube.menu.CubeMatterCreatorMenu;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -12,11 +14,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
-public class CubeEnergyExtractorScreen extends AbstractContainerScreen<CubeEnergyExtractorMenu> {
+public class CubeMatterCreatorScreen extends AbstractContainerScreen<CubeMatterCreatorMenu> {
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Ultracube.MODID,
-            "textures/gui/energy_generator.png");
+            "textures/gui/matter_creator.png");
 
-    public CubeEnergyExtractorScreen(CubeEnergyExtractorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
+    public CubeMatterCreatorScreen(CubeMatterCreatorMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle);
         this.imageWidth = 176;
         this.imageHeight = 166;

@@ -38,6 +38,7 @@ public class CreativeTabInit {
             event.accept(BlockInit.THE_CUBE_BLOCK);
             event.accept(ItemInit.CUBE_MATTER_ITEM);
             event.accept(BlockInit.ENERGY_GENERATOR_BLOCK);
+            event.accept(BlockInit.CUBE_MATTER_CREATOR_BLOCK);
             event.accept(BlockInit.CUBE_ENERGY_EXTRACTOR_BLOCK);
         }
     }
