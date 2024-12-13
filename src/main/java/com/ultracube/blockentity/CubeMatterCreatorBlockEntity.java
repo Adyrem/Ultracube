@@ -85,28 +85,21 @@ public class CubeMatterCreatorBlockEntity extends BlockEntity implements Tickabl
         if (this.level == null || this.level.isClientSide())
             return;
 
-        if (this.energy.getEnergyStored() > 0) {
-            if (canExtract(this.inventory.getStackInSlot(0))) {
-                if (this.genTime <= 0) {
-                    this.genTime = this.maxGenTime;
+        if (canCreate(this.inventory.getStackInSlot(0), this.inventory.getStackInSlot(1))) {
+            if (this.genTime <= 0) {
+                this.genTime = this.maxGenTime;
 
-                    if (this.inventory.getStackInSlot(1).getMaxStackSize() == this.inventory.getStackInSlot(1)
-                            .getCount()) {
-                        return;
-                    }
-
-                    if (this.inventory.getStackInSlot(1).isEmpty()) {
-                        this.inventory.setStackInSlot(1, new ItemStack(ItemInit.CUBE_MATTER_ITEM.get(), 1));
-                    } else {
-                        this.inventory.getStackInSlot(1).grow(1);
-                    }
-                    sendUpdate();
-
+                if (this.inventory.getStackInSlot(1).isEmpty()) {
+                    this.inventory.setStackInSlot(1, new ItemStack(ItemInit.CUBE_MATTER_ITEM.get(), 1));
                 } else {
-                    this.genTime--;
-                    this.energy.addEnergy(-energyPerTick);
-                    sendUpdate();
+                    this.inventory.getStackInSlot(1).grow(1);
                 }
+                sendUpdate();
+
+            } else {
+                this.genTime--;
+                this.energy.addEnergy(-energyPerTick);
+                sendUpdate();
             }
         }
     }
@@ -186,8 +179,20 @@ public class CubeMatterCreatorBlockEntity extends BlockEntity implements Tickabl
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
-    public boolean canExtract(ItemStack stack) {
-        return stack.getItem() == ItemInit.THE_CUBE_BLOCK_ITEM.get();
+    public boolean canCreate(ItemStack input, ItemStack output) {
+        if (this.energy.getEnergyStored() <= 0) {
+            return false;
+        }
+
+        if (output.getMaxStackSize() <= output.getCount()) {
+            return false;
+        }
+
+        if (input.getItem() != ItemInit.THE_CUBE_BLOCK_ITEM.get()) {
+            return false;
+        }
+
+        return true;
     }
 
 }

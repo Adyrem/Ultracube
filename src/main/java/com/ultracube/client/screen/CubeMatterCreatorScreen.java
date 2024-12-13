@@ -33,6 +33,7 @@ public class CubeMatterCreatorScreen extends AbstractContainerScreen<CubeMatterC
 
         // AARRGGBB
 
+        //Energy
         // background
         pGuiGraphics.fill(
                 this.leftPos + 115,
@@ -47,6 +48,23 @@ public class CubeMatterCreatorScreen extends AbstractContainerScreen<CubeMatterC
                 this.topPos + 21 + (38 - energyScaled),
                 this.leftPos + 130,
                 this.topPos + 59,
+                0xFFCC2222);
+
+        //Progress
+        // background
+        pGuiGraphics.fill(
+                this.leftPos + 65,
+                this.topPos + 41,
+                this.leftPos + 80,
+                this.topPos + 45,
+                0xFF555555);
+
+        // foreground
+        pGuiGraphics.fill(
+                this.leftPos + 65,
+                this.topPos + 41,
+                this.leftPos + 65 + ( 15- this.menu.getGenTimeScaled()),
+                this.topPos + 45,
                 0xFFCC2222);
     }
 

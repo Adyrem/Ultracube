@@ -81,10 +81,8 @@ public class CubeEnergyExtractorBlockEntity extends BlockEntity implements Ticka
         if (this.level == null || this.level.isClientSide())
             return;
 
-        if (this.energy.getEnergyStored() < this.energy.getMaxEnergyStored()) {
-            if (canExtract(this.inventory.getStackInSlot(0))) {
-                this.energy.addEnergy(10);
-            }
+        if (canGenerate(this.inventory.getStackInSlot(0))) {
+            this.energy.addEnergy(10);
         }
 
         pushEnergy();
@@ -166,8 +164,16 @@ public class CubeEnergyExtractorBlockEntity extends BlockEntity implements Ticka
             this.level.sendBlockUpdated(this.worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
     }
 
-    public boolean canExtract(ItemStack stack) {
-        return stack.getItem() == ItemInit.THE_CUBE_BLOCK_ITEM.get();
+    public boolean canGenerate(ItemStack stack) {
+        if (this.energy.getEnergyStored() >= this.energy.getMaxEnergyStored()) {
+            return false;
+        }
+
+        if (stack.getItem() != ItemInit.THE_CUBE_BLOCK_ITEM.get()) {
+            return false;
+        }       
+
+        return true;
     }
 
     private void pushEnergy() {

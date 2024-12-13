@@ -140,4 +140,8 @@ public class CubeMatterCreatorMenu extends AbstractContainerMenu {
     public int getEnergyStoredScaled() {
         return (int) (((float) getEnergy() / (float) getMaxEnergy()) * 38);
     }
+
+    public int getGenTimeScaled() {
+        return (int) (((float) getGenTime() / (float) getMaxGenTime()) * 15);
+    }
 }
