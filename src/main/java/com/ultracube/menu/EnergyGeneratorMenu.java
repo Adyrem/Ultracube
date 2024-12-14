@@ -15,7 +15,7 @@ import com.ultracube.init.BlockInit;
 import com.ultracube.init.MenuInit;
 import com.ultracube.menu.slot.CustomCubeSlot;
 
-public class EnergyGeneratorMenu extends AbstractContainerMenu {
+public class EnergyGeneratorMenu extends PlayerInventoryMenu {
     private final EnergyGeneratorBlockEntity blockEntity;
     private final ContainerLevelAccess levelAccess;
     private final ContainerData data;
@@ -28,7 +28,7 @@ public class EnergyGeneratorMenu extends AbstractContainerMenu {
 
     // Server Constructor
     public EnergyGeneratorMenu(int containerId, Inventory playerInv, BlockEntity blockEntity, ContainerData data) {
-        super(MenuInit.ENERGY_GENERATOR_MENU.get(), containerId);
+        super(MenuInit.ENERGY_GENERATOR_MENU.get(), containerId, playerInv);
         if (blockEntity instanceof EnergyGeneratorBlockEntity be) {
             this.blockEntity = be;
         } else {
@@ -39,8 +39,6 @@ public class EnergyGeneratorMenu extends AbstractContainerMenu {
         this.levelAccess = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
         this.data = data;
 
-        createPlayerHotbar(playerInv);
-        createPlayerInventory(playerInv);
         createBlockEntityInventory(be);
 
         addDataSlots(data);

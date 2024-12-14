@@ -15,7 +15,7 @@ import com.ultracube.init.BlockInit;
 import com.ultracube.init.MenuInit;
 import com.ultracube.menu.slot.CustomCubeSlot;
 
-public class CubeEnergyExtractorMenu extends AbstractContainerMenu {
+public class CubeEnergyExtractorMenu extends PlayerInventoryMenu {
     private final CubeEnergyExtractorBlockEntity blockEntity;
     private final ContainerLevelAccess levelAccess;
     private final ContainerData data;
@@ -30,7 +30,7 @@ public class CubeEnergyExtractorMenu extends AbstractContainerMenu {
 
     // Server Constructor
     public CubeEnergyExtractorMenu(int containerId, Inventory playerInv, BlockEntity blockEntity, ContainerData data) {
-        super(MenuInit.CUBE_ENERGY_EXTRACTOR_MENU.get(), containerId);
+        super(MenuInit.CUBE_ENERGY_EXTRACTOR_MENU.get(), containerId, playerInv);
         if (blockEntity instanceof CubeEnergyExtractorBlockEntity be) {
             this.blockEntity = be;
         } else {
@@ -41,8 +41,6 @@ public class CubeEnergyExtractorMenu extends AbstractContainerMenu {
         this.levelAccess = ContainerLevelAccess.create(blockEntity.getLevel(), blockEntity.getBlockPos());
         this.data = data;
 
-        createPlayerHotbar(playerInv);
-        createPlayerInventory(playerInv);
         createBlockEntityInventory(be);
 
         addDataSlots(data);
@@ -52,26 +50,6 @@ public class CubeEnergyExtractorMenu extends AbstractContainerMenu {
         ItemStackHandler itemStackHandler = be.getInventoryOptional();
         if (itemStackHandler != null) {
             addSlot(new CustomCubeSlot(itemStackHandler, 0, 44, 36));
-        }
-    }
-
-    private void createPlayerInventory(Inventory playerInv) {
-        for (int row = 0; row < 3; row++) {
-            for (int column = 0; column < 9; column++) {
-                addSlot(new Slot(playerInv,
-                        9 + column + (row * 9),
-                        8 + (column * 18),
-                        84 + (row * 18)));
-            }
-        }
-    }
-
-    private void createPlayerHotbar(Inventory playerInv) {
-        for (int column = 0; column < 9; column++) {
-            addSlot(new Slot(playerInv,
-                    column,
-                    8 + (column * 18),
-                    142));
         }
     }
 
