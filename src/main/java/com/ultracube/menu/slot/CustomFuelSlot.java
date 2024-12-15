@@ -15,6 +15,6 @@ public class CustomFuelSlot extends SlotItemHandler {
     public boolean mayPlace(@NotNull ItemStack stack) {
         // TODO check for fuel items
 
-        return false;
+        return true;
     }
 }

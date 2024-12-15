@@ -2,8 +2,12 @@ package com.ultracube.blockentity;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.items.ItemStackHandler;
+
+import java.lang.module.ModuleDescriptor.Builder;
 
 import javax.annotation.Nullable;
 
@@ -26,9 +30,11 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 
 public class EnergyGeneratorBlockEntity extends BlockEntity implements TickableBlockEntity, MenuProvider {
 
@@ -179,7 +185,10 @@ public class EnergyGeneratorBlockEntity extends BlockEntity implements TickableB
     }
 
     public int getBurnTime(ItemStack stack) {
-        // TODO get burn time correctly
+        if (this.level != null) {
+            return stack.getBurnTime(RecipeType.SMELTING, this.level.fuelValues());
+        }
+
         return 0;
     }
 

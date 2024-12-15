@@ -1,9 +1,7 @@
 package com.ultracube.client.screen;
 
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 
-import com.mojang.logging.LogUtils;
 import com.ultracube.Ultracube;
 import com.ultracube.menu.CubeMatterCreatorMenu;
 
@@ -27,13 +25,14 @@ public class CubeMatterCreatorScreen extends AbstractContainerScreen<CubeMatterC
     @Override
     protected void renderBg(@NotNull GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
         renderTransparentBackground(pGuiGraphics);
-        pGuiGraphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos, this.topPos, 0.f, 0.f, this.imageWidth,
+        pGuiGraphics.blit(RenderType::guiTextured, TEXTURE, this.leftPos, this.topPos, 0.f, 0.f,
+                this.imageWidth,
                 this.imageHeight, 256, 256);
         int energyScaled = this.menu.getEnergyStoredScaled();
 
         // AARRGGBB
 
-        //Energy
+        // Energy
         // background
         pGuiGraphics.fill(
                 this.leftPos + 115,
@@ -50,7 +49,7 @@ public class CubeMatterCreatorScreen extends AbstractContainerScreen<CubeMatterC
                 this.topPos + 59,
                 0xFFCC2222);
 
-        //Progress
+        // Progress
         // background
         pGuiGraphics.fill(
                 this.leftPos + 65,
@@ -63,7 +62,7 @@ public class CubeMatterCreatorScreen extends AbstractContainerScreen<CubeMatterC
         pGuiGraphics.fill(
                 this.leftPos + 65,
                 this.topPos + 41,
-                this.leftPos + 65 + ( 15- this.menu.getGenTimeScaled()),
+                this.leftPos + 65 + (15 - this.menu.getGenTimeScaled()),
                 this.topPos + 45,
                 0xFFCC2222);
     }

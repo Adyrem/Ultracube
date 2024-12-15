@@ -171,7 +171,7 @@ public class CubeEnergyExtractorBlockEntity extends BlockEntity implements Ticka
 
         if (stack.getItem() != ItemInit.THE_CUBE_BLOCK_ITEM.get()) {
             return false;
-        }       
+        }
 
         return true;
     }
