@@ -33,6 +33,13 @@ public class ItemInit {
                     .rarity(Rarity.EPIC)
                     .stacksTo(1));
 
+    public static final DeferredItem<BlockItem> THE_CUBE_UNCHARGED_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(
+            "the_cube_uncharged_block",
+            BlockInit.THE_CUBE_UNCHARGED_BLOCK, new Item.Properties()
+                    .fireResistant()
+                    .rarity(Rarity.EPIC)
+                    .stacksTo(1));
+
     public static final DeferredItem<FuelItem> CUBE_MATTER_ITEM = ITEMS.register("cube_matter",
             (key) -> new FuelItem(
                     new Item.Properties()

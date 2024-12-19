@@ -1,5 +1,6 @@
 {
   "block.ultracube.the_cube_block": "The Cube",
+  "block.ultracube.the_cube_uncharged_block": "The Cube (uncharged)",
   "item.ultracube.cube_matter": "Cube matter",
   "block.ultracube.cube_energy_extractor_block": "Cube energy extractor",
   "block.ultracube.cube_matter_creator_block": "Cube matter creator"

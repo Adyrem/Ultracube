@@ -45,7 +45,7 @@ public class CubeMatterCreatorBlockEntity extends BlockEntity implements Tickabl
         super(BlockEntityInit.CUBE_MATTER_CREATOR_BLOCK.get(), pPos, pBlockState);
     }
 
-    private final ItemStackHandler inventory = new ItemStackHandler(2);
+    private final ItemStackHandler inventory = new ItemStackHandler(3);
     private final @Nullable ItemStackHandler inventoryOptional = this.inventory;
 
     private final CustomEnergyStorage energy = new CustomEnergyStorage(10000, 1000, 0, 0);

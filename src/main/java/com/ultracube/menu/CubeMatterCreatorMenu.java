@@ -53,6 +53,7 @@ public class CubeMatterCreatorMenu extends PlayerInventoryMenu {
         if (itemStackHandler != null) {
             addSlot(new CustomCubeSlot(itemStackHandler, 0, 44, 36));
             addSlot(new SlotItemHandler(itemStackHandler, 1, 87, 36));
+            addSlot(new SlotItemHandler(itemStackHandler, 2, 87, 50));
         }
     }
 
@@ -73,7 +74,7 @@ public class CubeMatterCreatorMenu extends PlayerInventoryMenu {
             // We are inside of the player's inventory
             if (!moveItemStackTo(fromStack, 36, 37, false))
                 return ItemStack.EMPTY;
-        } else if (pIndex < 38) {
+        } else if (pIndex < 39) {
             // We are inside of the block entity inventory
             if (!moveItemStackTo(fromStack, 0, 36, false))
                 return ItemStack.EMPTY;

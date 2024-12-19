@@ -37,4 +37,10 @@ public class BlockInit {
             Block::new,
             BlockBehaviour.Properties.of()
                     .mapColor(MapColor.STONE));
+
+    public static final DeferredBlock<Block> THE_CUBE_UNCHARGED_BLOCK = BLOCKS.registerBlock(
+            "the_cube_uncharged_block",
+            Block::new,
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE));
 }
